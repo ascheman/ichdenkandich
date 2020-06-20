@@ -1,4 +1,4 @@
-package com.example.ichdenkandich
+package net.aschemann.flutter.ichdenkandich
 
 import io.flutter.embedding.android.FlutterActivity
 
