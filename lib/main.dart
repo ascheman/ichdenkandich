@@ -182,31 +182,10 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
     return Scaffold(
       appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
       ),
       body: SingleChildScrollView(
@@ -214,40 +193,9 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Padding(
           padding: EdgeInsets.all(8.0),
           child: Center(
-            // Center is a layout widget. It takes a single child and positions it
-            // in the middle of the parent.
             child: Column(
-              // Column is also a layout widget. It takes a list of children and
-              // arranges them vertically. By default, it sizes itself to fit its
-              // children horizontally, and tries to be as tall as its parent.
-              //
-              // Invoke "debug painting" (press "p" in the console, choose the
-              // "Toggle Debug Paint" action from the Flutter Inspector in Android
-              // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-              // to see the wireframe for each widget.
-              //
-              // Column has various properties to control how it sizes itself and
-              // how it positions its children. Here we use mainAxisAlignment to
-              // center the children vertically; the main axis here is the vertical
-              // axis because Columns are vertical (the cross axis would be
-              // horizontal).
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 8.0),
-                  child: Text.rich(
-                    TextSpan(
-                      children: [
-                        TextSpan(
-                          text: 'You have pushed the button this many times:',
-                        ),
-                        TextSpan(
-                          text: '$_counter',
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
                 Padding(
                   padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 8.0),
                   child: Text(
@@ -302,7 +250,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
                 PaddedRaisedButton(
                   buttonText:
-                  'Schedule notification to appear in 5 seconds, custom sound, red colour, large icon, red LED',
+                      'Schedule notification to appear in 5 seconds, custom sound, red colour, large icon, red LED',
                   onPressed: () async {
                     await _scheduleNotification();
                   },
@@ -312,11 +260,6 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 
@@ -339,7 +282,7 @@ class _MyHomePageState extends State<MyHomePage> {
   /// Schedules a notification that specifies a different icon, sound and vibration pattern
   Future<void> _scheduleNotification() async {
     var scheduledNotificationDateTime =
-    DateTime.now().add(Duration(seconds: 5));
+        DateTime.now().add(Duration(seconds: 5));
     var vibrationPattern = Int64List(4);
     vibrationPattern[0] = 0;
     vibrationPattern[1] = 1000;
@@ -360,7 +303,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ledOnMs: 1000,
         ledOffMs: 500);
     var iOSPlatformChannelSpecifics =
-    IOSNotificationDetails(sound: 'slow_spring_board.aiff');
+        IOSNotificationDetails(sound: 'slow_spring_board.aiff');
     var platformChannelSpecifics = NotificationDetails(
         androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
     await flutterLocalNotificationsPlugin.schedule(
@@ -369,9 +312,9 @@ class _MyHomePageState extends State<MyHomePage> {
         'scheduled body',
         scheduledNotificationDateTime,
         platformChannelSpecifics);
-    log.d("Scheduled Notification for " + scheduledNotificationDateTime.toIso8601String());
+    log.d("Scheduled Notification for " +
+        scheduledNotificationDateTime.toIso8601String());
   }
-
 }
 
 class SecondScreen extends StatefulWidget {
