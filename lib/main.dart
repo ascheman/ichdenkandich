@@ -123,6 +123,8 @@ class _MyHomePageState extends State<MyHomePage> {
   final MethodChannel platform =
       MethodChannel('crossingthestreams.io/resourceResolver');
 
+  String targetPerson = "Katrin";
+
   @override
   void initState() {
     super.initState();
@@ -145,6 +147,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void _configureDidReceiveLocalNotificationSubject() {
     didReceiveLocalNotificationSubject.stream
         .listen((ReceivedNotification receivedNotification) async {
+      log.d("Received local Notification '${receivedNotification}'");
       await showDialog(
         context: context,
         builder: (BuildContext context) => CupertinoAlertDialog(
@@ -177,6 +180,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _configureSelectNotificationSubject() {
     selectNotificationSubject.stream.listen((String payload) async {
+      log.d("Received Notification with Payload '${payload}'");
       await Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => LaunchApplication(payload)),
@@ -272,9 +276,9 @@ class _MyHomePageState extends State<MyHomePage> {
     var iOSPlatformChannelSpecifics = IOSNotificationDetails();
     var platformChannelSpecifics = NotificationDetails(
         androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
-    await flutterLocalNotificationsPlugin.show(
-        0, 'plain title', 'plain body', platformChannelSpecifics,
-        payload: 'item x');
+    await flutterLocalNotificationsPlugin.show(0, 'Ich denk an Dich (Local)',
+        'Send Greetings to "${targetPerson}"', platformChannelSpecifics,
+        payload: targetPerson);
   }
 
   Future<void> _cancelNotification() async {
@@ -310,10 +314,11 @@ class _MyHomePageState extends State<MyHomePage> {
         androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
     await flutterLocalNotificationsPlugin.schedule(
         0,
-        'scheduled title',
-        'scheduled body',
+        'Ich denk an Dich (Scheduled)',
+        'Send Greetings to "${targetPerson}"',
         scheduledNotificationDateTime,
-        platformChannelSpecifics);
+        platformChannelSpecifics,
+        payload: targetPerson);
     log.d("Scheduled Notification for " +
         scheduledNotificationDateTime.toIso8601String());
   }
@@ -384,7 +389,7 @@ class LaunchApplicationState extends State<LaunchApplication> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Send Greeting to ${(_payload ?? '')}'),
+        title: Text('Send Greetings to ${(_payload ?? '')} via'),
       ),
       body: ListView.builder(
         itemCount: installedApps == null ? 0 : installedApps.length,
