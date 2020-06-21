@@ -5,7 +5,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:logger/logger.dart';
 import 'package:rxdart/subjects.dart';
+
+final log = Logger();
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
@@ -72,7 +75,7 @@ Future<void> main() async {
   await flutterLocalNotificationsPlugin.initialize(initializationSettings,
       onSelectNotification: (String payload) async {
     if (payload != null) {
-      debugPrint('notification payload: ' + payload);
+      log.d('notification payload: ' + payload);
     }
     selectNotificationSubject.add(payload);
   });
@@ -377,7 +380,7 @@ class _MyHomePageState extends State<MyHomePage> {
         'scheduled body',
         scheduledNotificationDateTime,
         platformChannelSpecifics);
-    print("Scheduled");
+    log.d("Scheduled Notification for " + scheduledNotificationDateTime.toIso8601String());
   }
 
 }
