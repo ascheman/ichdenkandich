@@ -125,6 +125,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   String targetPerson = "Katrin";
 
+  final testScheduledNotificationDelay = 10;
+
   @override
   void initState() {
     super.initState();
@@ -204,23 +206,38 @@ class _MyHomePageState extends State<MyHomePage> {
               children: <Widget>[
                 Padding(
                   padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 8.0),
-                  child: TextFormField(
-                    decoration: InputDecoration(
+                  child: Text(
+                      'Tap on a notification when it appears\nto proceed to greeting application'),
+                ),
+                Padding(
+                    padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 8.0),
+                    child: TextFormField(
+                      decoration: InputDecoration(
                         border: OutlineInputBorder(),
                         labelText: 'Greet which person?',
-                    ),
-                    initialValue: targetPerson,
-                    onChanged: (String textinput) {
-                      setState(() {
-                        targetPerson = textinput;
-                      });
-                    },
-                  )
+                      ),
+                      initialValue: targetPerson,
+                      onChanged: (String textinput) {
+                        setState(() {
+                          targetPerson = textinput;
+                        });
+                      },
+                    )),
+                const Divider(
+                  color: Colors.red,
+                  height: 20,
+                  thickness: 5,
+                  indent: 0,
+                  endIndent: 0,
                 ),
                 Padding(
                   padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 8.0),
-                  child: Text(
-                      'Tap on a notification when it appears to trigger navigation'),
+                  child: Text.rich(
+                    TextSpan(
+                        style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red),
+                        text:
+                            'Developers Corner (to be removed or hidden in final release)'),
+                  ),
                 ),
                 Padding(
                   padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 8.0),
@@ -271,9 +288,9 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
                 PaddedRaisedButton(
                   buttonText:
-                      'Schedule notification to appear in 5 seconds, custom sound, red colour, large icon, red LED',
+                      'Schedule notification to appear in ${testScheduledNotificationDelay} seconds, custom sound, red colour, large icon, red LED',
                   onPressed: () async {
-                    await _scheduleNotification();
+                    await _scheduleTestNotification();
                   },
                 ),
               ],
@@ -301,9 +318,9 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   /// Schedules a notification that specifies a different icon, sound and vibration pattern
-  Future<void> _scheduleNotification() async {
+  Future<void> _scheduleTestNotification() async {
     var scheduledNotificationDateTime =
-        DateTime.now().add(Duration(seconds: 5));
+        DateTime.now().add(Duration(seconds: testScheduledNotificationDelay));
     var vibrationPattern = Int64List(4);
     vibrationPattern[0] = 0;
     vibrationPattern[1] = 1000;
