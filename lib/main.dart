@@ -204,6 +204,21 @@ class _MyHomePageState extends State<MyHomePage> {
               children: <Widget>[
                 Padding(
                   padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 8.0),
+                  child: TextFormField(
+                    decoration: InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: 'Greet which person?',
+                    ),
+                    initialValue: targetPerson,
+                    onChanged: (String textinput) {
+                      setState(() {
+                        targetPerson = textinput;
+                      });
+                    },
+                  )
+                ),
+                Padding(
+                  padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 8.0),
                   child: Text(
                       'Tap on a notification when it appears to trigger navigation'),
                 ),
