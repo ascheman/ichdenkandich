@@ -1,7 +1,65 @@
-= ichdenkandich
+:toc: true
 
-A new Flutter project.
+= Ich Denk An Dich
 
+====
+.TL;DR
+A _birthday_ present for my beloved wife Katrin Rabow <3
+
+She always wanted to get a short notice every day that I was remembering her and thinking of her.
+Unfortunately I am a so called Nerd.
+Sometimes (at least for some hours a day) I dive into a tunnel and will not even recognize a fire alarm in the same building.
+
+But then - she is a great woman - she came up with a very practical solution: Why not write a mobile app to remind me every now and then to send her a message.
+I think it is not a replacement for a trigger in my brain to remember my family in the real world but probably a good work around.
+
+So I took some time to learn how to write a mobile app with the great <<sec:flutter,Flutter>> framework.
+Hope to get it ready by 2020-06-30!
+====
+
+== Features
+
+=== Usage Features
+
+* [x] Run on Android and iOS (for the latter only tested on emulator so far, cf. <<sec:problems:ios>>)
+* [x] Enable to launch external applications to send the message
+* [x] Add target person's name (TextField)
+
+=== Developer Features
+
+* [x] Use nice logger
+* [x] Initial documentation
+
+== TODOs
+
+=== Features
+
+* [ ] Select Date/Time for OneTime Reminder
+* [ ] Select Date/Time range for Frequent Reminders
+* [ ] Select Days-of-Week choice for Frequent Reminders
+* [ ] List of Applications as Pre-Selection
+* [ ] Text for greeting (for Copy&Paste): https://camposha.info/flutter-textfield-single-and-multiline/
+* [ ] Forward Text / TargetPerson to Application
+
+=== Marketing
+
+* [ ] Prepare product description for Android Playstore
+* [ ] Prepare introduction Tweet series
+
+=== Build / Deployment
+
+* [ ] Deploy to Android Store
+** Get Application Id: https://developer.android.com/studio/build/application-id.html
+
+=== Problems
+
+[[sec:problems:ios]]
+==== iOS
+
+* [ ] Extend iOS version: works in general but cannot generate notifications on emulator
+* [ ] Deliver to real (testing) device
+
+[[sec:flutter]]
 == Getting Started
 
 This project is a starting point for a Flutter application.
