@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:logger/logger.dart';
 import 'package:rxdart/subjects.dart';
@@ -127,6 +128,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   final testScheduledNotificationDelay = 10;
 
+  DateTime reminderTime = DateTime.now();
+
   @override
   void initState() {
     super.initState();
@@ -190,6 +193,23 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  // This is kind of functional - If the value is not changed the current value is returned
+  Future<DateTime> _selectDateTime(
+      BuildContext context, DateTime currentValue) async {
+    final DateTime _selectedDateTime = await DatePicker.showDateTimePicker(
+      context,
+      showTitleActions: true,
+      currentTime: currentValue,
+      minTime: DateTime.now(),
+      locale: LocaleType.de,
+    );
+
+    if (null == _selectedDateTime) {
+      return currentValue;
+    }
+    return _selectedDateTime;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -223,6 +243,39 @@ class _MyHomePageState extends State<MyHomePage> {
                         });
                       },
                     )),
+                Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Row(
+                    children: <Widget>[
+                      IconButton(
+                        icon: Icon(
+                          Icons.calendar_today,
+                          semanticLabel: "Select reminder date/time",
+                        ),
+                        onPressed: () async {
+                          final newTime =
+                              await _selectDateTime(context, reminderTime);
+                          setState(() {
+                            log.d(
+                                "Selected a new reminder date/time: $newTime");
+                            reminderTime = newTime;
+                          });
+                        },
+                      ),
+                      Expanded(
+                        child: Center(
+                          child: Text('Selected: $reminderTime'),
+                        ),
+                      ),
+                      PaddedRaisedButton(
+                        buttonText: 'Schedule',
+                        onPressed: () async {
+                          await _scheduleTestNotification(reminderTime);
+                        },
+                      ),
+                    ],
+                  ),
+                ),
                 const Divider(
                   color: Colors.red,
                   height: 20,
@@ -234,7 +287,8 @@ class _MyHomePageState extends State<MyHomePage> {
                   padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 8.0),
                   child: Text.rich(
                     TextSpan(
-                        style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red),
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, color: Colors.red),
                         text:
                             'Developers Corner (to be removed or hidden in final release)'),
                   ),
@@ -290,7 +344,10 @@ class _MyHomePageState extends State<MyHomePage> {
                   buttonText:
                       'Schedule notification to appear in ${testScheduledNotificationDelay} seconds, custom sound, red colour, large icon, red LED',
                   onPressed: () async {
-                    await _scheduleTestNotification();
+                    var scheduledNotificationDateTime = DateTime.now()
+                        .add(Duration(seconds: testScheduledNotificationDelay));
+                    await _scheduleTestNotification(
+                        scheduledNotificationDateTime);
                   },
                 ),
               ],
@@ -318,9 +375,8 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   /// Schedules a notification that specifies a different icon, sound and vibration pattern
-  Future<void> _scheduleTestNotification() async {
-    var scheduledNotificationDateTime =
-        DateTime.now().add(Duration(seconds: testScheduledNotificationDelay));
+  Future<void> _scheduleTestNotification(
+      DateTime scheduledNotificationDateTime) async {
     var vibrationPattern = Int64List(4);
     vibrationPattern[0] = 0;
     vibrationPattern[1] = 1000;
