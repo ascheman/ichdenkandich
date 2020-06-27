@@ -105,15 +105,6 @@ class IchDenkAnDichApp extends StatelessWidget {
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
 
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
   final String title;
 
   @override
@@ -152,7 +143,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void _configureDidReceiveLocalNotificationSubject() {
     didReceiveLocalNotificationSubject.stream
         .listen((ReceivedNotification receivedNotification) async {
-      log.d("Received local Notification '${receivedNotification}'");
+      log.d("Received local Notification '$receivedNotification'");
       await showDialog(
         context: context,
         builder: (BuildContext context) => CupertinoAlertDialog(
@@ -185,7 +176,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _configureSelectNotificationSubject() {
     selectNotificationSubject.stream.listen((String payload) async {
-      log.d("Received Notification with Payload '${payload}'");
+      log.d("Received Notification with Payload '$payload'");
       await Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => LaunchApplication(payload)),
@@ -342,7 +333,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
                 PaddedRaisedButton(
                   buttonText:
-                      'Schedule notification to appear in ${testScheduledNotificationDelay} seconds, custom sound, red colour, large icon, red LED',
+                      'Schedule notification to appear in $testScheduledNotificationDelay seconds, custom sound, red colour, large icon, red LED',
                   onPressed: () async {
                     var scheduledNotificationDateTime = DateTime.now()
                         .add(Duration(seconds: testScheduledNotificationDelay));
@@ -366,7 +357,7 @@ class _MyHomePageState extends State<MyHomePage> {
     var platformChannelSpecifics = NotificationDetails(
         androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
     await flutterLocalNotificationsPlugin.show(0, 'Ich denk an Dich (Local)',
-        'Send Greetings to "${targetPerson}"', platformChannelSpecifics,
+        'Send Greetings to "$targetPerson"', platformChannelSpecifics,
         payload: targetPerson);
   }
 
@@ -403,7 +394,7 @@ class _MyHomePageState extends State<MyHomePage> {
     await flutterLocalNotificationsPlugin.schedule(
         0,
         'Ich denk an Dich (Scheduled)',
-        'Send Greetings to "${targetPerson}"',
+        'Send Greetings to "$targetPerson"\n(at $scheduledNotificationDateTime)',
         scheduledNotificationDateTime,
         platformChannelSpecifics,
         payload: targetPerson);

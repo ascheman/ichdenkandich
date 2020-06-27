@@ -28,9 +28,9 @@ class LaunchApplicationState extends State<LaunchApplication> {
     {"app_name": "Whatsapp", "package_name": "whatsapp://"}
   ];
 
-  Future<String> appEnablementState(String package_name) async {
+  Future<String> appEnablementState(String packageName) async {
     if (Platform.isAndroid) {
-      if (await AppAvailability.isAppEnabled(package_name)) {
+      if (await AppAvailability.isAppEnabled(packageName)) {
         return "Enabled";
       }
       return "Disabled";
