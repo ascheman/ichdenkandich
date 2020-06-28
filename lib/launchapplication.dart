@@ -1,10 +1,11 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:clipboard_manager/clipboard_manager.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:logger/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_appavailability/flutter_appavailability.dart';
+import 'package:logger/logger.dart';
 
 final log = Logger();
 
@@ -70,7 +71,7 @@ class LaunchApplicationState extends State<LaunchApplication> {
     if (installedApps == null) {
       getApps();
     }
-
+    ClipboardManager.copyToClipBoard("Liebe $_payload, ich musste gerade an dich denken!");
     return Scaffold(
       appBar: AppBar(
         title: Text('Send Greetings to ${(_payload ?? '')} via'),
