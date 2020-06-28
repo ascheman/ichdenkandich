@@ -87,12 +87,12 @@ class LaunchApplicationState extends State<LaunchApplication> {
                   AppAvailability.launchApp(
                       installedApps[index]["package_name"])
                       .then((_) {
-                    print("App ${installedApps[index]["app_name"]} launched!");
+                    log.d("App ${installedApps[index]["app_name"]} launched!");
                   }).catchError((err) {
                     Scaffold.of(context).showSnackBar(SnackBar(
                         content: Text(
                             "App ${installedApps[index]["app_name"]} not found!")));
-                    print(err);
+                    log.e(err);
                   });
                 }),
           );
