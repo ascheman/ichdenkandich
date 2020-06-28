@@ -28,6 +28,7 @@ By {author} (mailto:{email}[{email}])
 * [x] Run on Android and iOS (for the latter only tested on emulator so far, cf. <<sec:problems:ios>>)
 * [x] Enable to launch external applications to send the message
 * [x] Add target person's name (TextField)
+* [x] Select Date/Time for OneTime Reminder
 
 === Developer Features
 
@@ -40,7 +41,7 @@ By {author} (mailto:{email}[{email}])
 
 ==== Usage Features
 
-* [ ] Select Date/Time for OneTime Reminder
+* [ ] Show scheduled time + cancel button + probably _repeat after 24h_ switch
 * [ ] Select Date/Time range for Frequent Reminders
 * [ ] Select Days-of-Week choice for Frequent Reminders
 * [ ] List of Applications as Pre-Selection

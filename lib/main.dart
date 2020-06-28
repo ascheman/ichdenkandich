@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:intl/date_symbol_data_local.dart';
+import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
 import 'package:rxdart/subjects.dart';
 
@@ -115,18 +117,25 @@ class _MyHomePageState extends State<MyHomePage> {
   final MethodChannel platform =
       MethodChannel('crossingthestreams.io/resourceResolver');
 
-  String targetPerson = "Katrin";
+  // TODO find out hot to best cope with languages and loacles
+  static final defaultLanguage = 'de';
+  static final LocaleType defaultLocaleType = LocaleType.de;
+//  static final Locale defaultLocale = Locale(defaultLanguage);
 
   final testScheduledNotificationDelay = 10;
 
-  DateTime reminderTime = DateTime.now();
+  String targetPerson = "Katrin";
+  DateTime reminderDateTime = DateTime.now();
+  String reminderDateTimeFormatted;
 
   @override
   void initState() {
     super.initState();
+    initializeDateFormatting(defaultLanguage);
     _requestIOSPermissions();
     _configureDidReceiveLocalNotificationSubject();
     _configureSelectNotificationSubject();
+    reminderDateTimeFormatted = _formatted(reminderDateTime);
   }
 
   void _requestIOSPermissions() {
@@ -192,13 +201,25 @@ class _MyHomePageState extends State<MyHomePage> {
       showTitleActions: true,
       currentTime: currentValue,
       minTime: DateTime.now(),
-      locale: LocaleType.de,
+      locale: defaultLocaleType,
     );
 
     if (null == _selectedDateTime) {
       return currentValue;
     }
     return _selectedDateTime;
+  }
+
+  static String _formatted (DateTime dateTime) {
+    var formatter = DateFormat.yMd("de").add_jms();
+    String formatted = formatter.format(dateTime);
+
+    return formatted;
+  }
+
+  void setReminder(DateTime dateTime) {
+    reminderDateTime = dateTime;
+    reminderDateTimeFormatted = _formatted(dateTime);
   }
 
   @override
@@ -245,23 +266,22 @@ class _MyHomePageState extends State<MyHomePage> {
                         ),
                         onPressed: () async {
                           final newTime =
-                              await _selectDateTime(context, reminderTime);
+                              await _selectDateTime(context, reminderDateTime);
                           setState(() {
-                            log.d(
-                                "Selected a new reminder date/time: $newTime");
-                            reminderTime = newTime;
+                            log.d("Selected a new reminder date/time: $newTime");
+                            setReminder(newTime);
                           });
                         },
                       ),
                       Expanded(
                         child: Center(
-                          child: Text('Selected: $reminderTime'),
+                          child: Text('Selected: $reminderDateTimeFormatted'),
                         ),
                       ),
                       PaddedRaisedButton(
                         buttonText: 'Schedule',
                         onPressed: () async {
-                          await _scheduleTestNotification(reminderTime);
+                          await _scheduleNotification();
                         },
                       ),
                     ],
@@ -333,12 +353,14 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
                 PaddedRaisedButton(
                   buttonText:
-                      'Schedule notification to appear in $testScheduledNotificationDelay seconds, custom sound, red colour, large icon, red LED',
+                      'Schedule notification to appear in $testScheduledNotificationDelay seconds',
                   onPressed: () async {
-                    var scheduledNotificationDateTime = DateTime.now()
-                        .add(Duration(seconds: testScheduledNotificationDelay));
-                    await _scheduleTestNotification(
-                        scheduledNotificationDateTime);
+                    setState(()  {
+                      var scheduledNotificationDateTime = DateTime.now()
+                          .add(Duration(seconds: testScheduledNotificationDelay));
+                      setReminder(scheduledNotificationDateTime);
+                      _scheduleNotification();
+                    });
                   },
                 ),
               ],
@@ -366,8 +388,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   /// Schedules a notification that specifies a different icon, sound and vibration pattern
-  Future<void> _scheduleTestNotification(
-      DateTime scheduledNotificationDateTime) async {
+  Future<void> _scheduleNotification() async {
     var vibrationPattern = Int64List(4);
     vibrationPattern[0] = 0;
     vibrationPattern[1] = 1000;
@@ -394,11 +415,10 @@ class _MyHomePageState extends State<MyHomePage> {
     await flutterLocalNotificationsPlugin.schedule(
         0,
         'Ich denk an Dich (Scheduled)',
-        'Send Greetings to "$targetPerson"\n(at $scheduledNotificationDateTime)',
-        scheduledNotificationDateTime,
+        'Send Greetings to "$targetPerson"\n(at $reminderDateTimeFormatted)',
+        reminderDateTime,
         platformChannelSpecifics,
         payload: targetPerson);
-    log.d("Scheduled Notification for " +
-        scheduledNotificationDateTime.toIso8601String());
+    log.d("Scheduled Notification for $reminderDateTimeFormatted");
   }
 }
