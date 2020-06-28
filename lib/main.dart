@@ -13,6 +13,8 @@ import 'package:rxdart/subjects.dart';
 
 import 'launchapplication.dart';
 
+final ichDenkAnDich = 'Ich denk an Dich!';
+
 final log = Logger();
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
@@ -93,13 +95,13 @@ class IchDenkAnDichApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Ich denk an Dich!',
+      title: ichDenkAnDich,
       theme: ThemeData(
         primarySwatch: Colors.red,
         floatingActionButtonTheme: FloatingActionButtonThemeData(),
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: MyHomePage(title: 'Ich Denk An Dich'),
+      home: MyHomePage(title: ichDenkAnDich),
     );
   }
 }
@@ -441,7 +443,7 @@ class _MyHomePageState extends State<MyHomePage> {
     var iOSPlatformChannelSpecifics = IOSNotificationDetails();
     var platformChannelSpecifics = NotificationDetails(
         androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
-    await flutterLocalNotificationsPlugin.show(0, 'Ich denk an Dich (Local)',
+    await flutterLocalNotificationsPlugin.show(0, '$ichDenkAnDich (Local)',
         'Send Greetings to "$targetPerson"', platformChannelSpecifics,
         payload: targetPerson);
   }
@@ -479,7 +481,7 @@ class _MyHomePageState extends State<MyHomePage> {
         androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
     await flutterLocalNotificationsPlugin.schedule(
         0,
-        'Ich denk an Dich (Scheduled)',
+        '$ichDenkAnDich (Scheduled)',
         'Send Greetings to "$targetPerson"\n(at $scheduledDateTimeFormatted)',
         scheduledDateTime,
         platformChannelSpecifics,
