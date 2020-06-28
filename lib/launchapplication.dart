@@ -10,9 +10,10 @@ import 'package:logger/logger.dart';
 final log = Logger();
 
 class LaunchApplication extends StatefulWidget {
-  LaunchApplication(this.payload);
+  LaunchApplication(this.payload, this.message);
 
   final String payload;
+  final String message;
 
   @override
   State<StatefulWidget> createState() => LaunchApplicationState();
@@ -20,6 +21,7 @@ class LaunchApplication extends StatefulWidget {
 
 class LaunchApplicationState extends State<LaunchApplication> {
   String _payload;
+  String _message;
 
   List<Map<String, String>> installedApps;
 
@@ -64,6 +66,7 @@ class LaunchApplicationState extends State<LaunchApplication> {
   void initState() {
     super.initState();
     _payload = widget.payload;
+    _message = widget.message;
   }
 
   @override
@@ -71,7 +74,7 @@ class LaunchApplicationState extends State<LaunchApplication> {
     if (installedApps == null) {
       getApps();
     }
-    ClipboardManager.copyToClipBoard("Liebe $_payload, ich musste gerade an dich denken!");
+    ClipboardManager.copyToClipBoard(_message);
     return Scaffold(
       appBar: AppBar(
         title: Text('Send Greetings to ${(_payload ?? '')} via'),

@@ -33,6 +33,7 @@ By {author} (mailto:{email}[{email}])
 * [x] Select Date/Time for OneTime Reminder
 * [x] Show scheduled time + cancel button
 * [x] Show _repeat after 24h_ check box (and repeat notification after 24h, of course)
+* [x] Edit greeting message and copy to clipboard to paste
 
 === Developer Features
 
@@ -45,10 +46,9 @@ By {author} (mailto:{email}[{email}])
 
 ==== Usage Features
 
-* [ ] Select Date/Time range for Frequent Reminders
+* [ ] Select Date/Time range for random/frequent Reminders
 * [ ] Select Days-of-Week choice for Frequent Reminders
 * [ ] List of Applications as Pre-Selection
-* [ ] Text for greeting (for Copy&Paste): https://camposha.info/flutter-textfield-single-and-multiline/
 * [ ] Forward Text / TargetPerson to Application
 * [ ] Add snooze button to Popup
 * [ ] Show warning when selected time is in past

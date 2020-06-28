@@ -59,6 +59,7 @@ class PaddedRaisedButton extends StatelessWidget {
 }
 
 Future<void> main() async {
+  log.d("Starting main");
   // needed if you intend to initialize in the `main` function
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -86,6 +87,7 @@ Future<void> main() async {
     }
     selectNotificationSubject.add(payload);
   });
+  log.d("Initialized notifications");
 
   runApp(IchDenkAnDichApp());
 }
@@ -128,6 +130,7 @@ class _MyHomePageState extends State<MyHomePage> {
   final testScheduledNotificationDelay = 5;
 
   String targetPerson = "Katrin";
+  String message;
 
   // TODO provide value type (with proper formatting of value for output)
   DateTime selectedDateTime;
@@ -148,6 +151,7 @@ class _MyHomePageState extends State<MyHomePage> {
     _configureSelectNotificationSubject();
     setSelectedDateTime(DateTime.now());
     setScheduledDateTime(null);
+    message = "Liebe $targetPerson,\nmusste dank '$ichDenkAnDich'\ngerade an dich denken! <3";
   }
 
   void _requestIOSPermissions() {
@@ -184,7 +188,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   context,
                   MaterialPageRoute(
                     builder: (context) =>
-                        LaunchApplication(receivedNotification.payload),
+                        LaunchApplication(receivedNotification.payload, message),
                   ),
                 );
               },
@@ -204,7 +208,7 @@ class _MyHomePageState extends State<MyHomePage> {
       });
       await Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => LaunchApplication(payload)),
+        MaterialPageRoute(builder: (context) => LaunchApplication(payload, message)),
       );
     });
   }
@@ -359,6 +363,21 @@ class _MyHomePageState extends State<MyHomePage> {
                     ],
                   ),
                 ),
+                Padding(
+                    padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 8.0),
+                    child: TextFormField(
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: 'Initial message (copy & paste in called reminder app)',
+                      ),
+                      initialValue: message,
+                      maxLines: 5,
+                      onChanged: (String textinput) {
+                        setState(() {
+                          message = textinput;
+                        });
+                      },
+                    )),
                 const Divider(
                   color: Colors.red,
                   height: 20,
