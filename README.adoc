@@ -30,6 +30,7 @@ By {author} (mailto:{email}[{email}])
 * [x] Add target person's name (TextField)
 * [x] Select Date/Time for OneTime Reminder
 * [x] Show scheduled time + cancel button
+* [x] Show _repeat after 24h_ check box (and repeat notification after 24h, of course)
 
 === Developer Features
 
@@ -42,7 +43,6 @@ By {author} (mailto:{email}[{email}])
 
 ==== Usage Features
 
-* [ ] Show _repeat after 24h_ switch
 * [ ] Select Date/Time range for Frequent Reminders
 * [ ] Select Days-of-Week choice for Frequent Reminders
 * [ ] List of Applications as Pre-Selection

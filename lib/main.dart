@@ -120,9 +120,10 @@ class _MyHomePageState extends State<MyHomePage> {
   // TODO find out hot to best cope with languages and loacles
   static final defaultLanguage = 'de';
   static final LocaleType defaultLocaleType = LocaleType.de;
+
 //  static final Locale defaultLocale = Locale(defaultLanguage);
 
-  final testScheduledNotificationDelay = 10;
+  final testScheduledNotificationDelay = 5;
 
   String targetPerson = "Katrin";
 
@@ -133,6 +134,8 @@ class _MyHomePageState extends State<MyHomePage> {
   // TODO provide value type (with proper formatting of value for output)
   DateTime scheduledDateTime = null;
   String scheduledDateTimeFormatted;
+
+  bool repeatAfter24h = true;
 
   @override
   void initState() {
@@ -193,6 +196,10 @@ class _MyHomePageState extends State<MyHomePage> {
   void _configureSelectNotificationSubject() {
     selectNotificationSubject.stream.listen((String payload) async {
       log.d("Received Notification with Payload '$payload'");
+      setState(() {
+//        log.d("State is dirty now");
+        reschedule();
+      });
       await Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => LaunchApplication(payload)),
@@ -227,6 +234,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void setSelectedDateTime(DateTime dateTime) {
     selectedDateTime = dateTime;
     selectedDateTimeFormatted = _formatted(dateTime);
+    log.d("Selected time '$scheduledDateTimeFormatted'");
   }
 
   void setScheduledDateTime(DateTime dateTime) {
@@ -235,6 +243,16 @@ class _MyHomePageState extends State<MyHomePage> {
       scheduledDateTimeFormatted = _formatted(dateTime);
     } else {
       scheduledDateTimeFormatted = "None";
+    }
+    log.d("Scheduled time '$scheduledDateTimeFormatted'");
+  }
+
+  void reschedule() {
+    if (repeatAfter24h && null != scheduledDateTime) {
+      _scheduleNotification(scheduledDateTime.add(Duration(days: 1)));
+    } else {
+      _cancelNotification();
+      log.d("No repeat required to reschedule");
     }
   }
 
@@ -275,6 +293,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   padding: EdgeInsets.all(8.0),
                   child: Row(
                     children: <Widget>[
+                      Text('Select:'),
                       IconButton(
                         icon: Icon(
                           Icons.calendar_today,
@@ -284,8 +303,6 @@ class _MyHomePageState extends State<MyHomePage> {
                           final newTime =
                               await _selectDateTime(context, selectedDateTime);
                           setState(() {
-                            log.d(
-                                "Selected a new reminder date/time: $newTime");
                             setSelectedDateTime(newTime);
                           });
                         },
@@ -311,6 +328,18 @@ class _MyHomePageState extends State<MyHomePage> {
                   padding: EdgeInsets.all(8.0),
                   child: Row(
                     children: <Widget>[
+                      Text('Repeat(24h):'),
+                      Padding(
+                        padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 8.0),
+                        child: Checkbox(
+                          value: repeatAfter24h,
+                          onChanged: (bool value) {
+                            setState(() {
+                              repeatAfter24h = value;
+                            });
+                          },
+                        ),
+                      ),
                       Expanded(
                         child: Center(
                           child: Text('Scheduled: $scheduledDateTimeFormatted'),
@@ -326,7 +355,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         },
                       ),
                     ],
-                  )
+                  ),
                 ),
                 const Divider(
                   color: Colors.red,
