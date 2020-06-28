@@ -125,8 +125,14 @@ class _MyHomePageState extends State<MyHomePage> {
   final testScheduledNotificationDelay = 10;
 
   String targetPerson = "Katrin";
-  DateTime reminderDateTime = DateTime.now();
-  String reminderDateTimeFormatted;
+
+  // TODO provide value type (with proper formatting of value for output)
+  DateTime selectedDateTime;
+  String selectedDateTimeFormatted;
+
+  // TODO provide value type (with proper formatting of value for output)
+  DateTime scheduledDateTime = null;
+  String scheduledDateTimeFormatted;
 
   @override
   void initState() {
@@ -135,7 +141,8 @@ class _MyHomePageState extends State<MyHomePage> {
     _requestIOSPermissions();
     _configureDidReceiveLocalNotificationSubject();
     _configureSelectNotificationSubject();
-    reminderDateTimeFormatted = _formatted(reminderDateTime);
+    setSelectedDateTime(DateTime.now());
+    setScheduledDateTime(null);
   }
 
   void _requestIOSPermissions() {
@@ -210,16 +217,25 @@ class _MyHomePageState extends State<MyHomePage> {
     return _selectedDateTime;
   }
 
-  static String _formatted (DateTime dateTime) {
+  static String _formatted(DateTime dateTime) {
     var formatter = DateFormat.yMd("de").add_jms();
     String formatted = formatter.format(dateTime);
 
     return formatted;
   }
 
-  void setReminder(DateTime dateTime) {
-    reminderDateTime = dateTime;
-    reminderDateTimeFormatted = _formatted(dateTime);
+  void setSelectedDateTime(DateTime dateTime) {
+    selectedDateTime = dateTime;
+    selectedDateTimeFormatted = _formatted(dateTime);
+  }
+
+  void setScheduledDateTime(DateTime dateTime) {
+    if (null != dateTime) {
+      scheduledDateTime = dateTime;
+      scheduledDateTimeFormatted = _formatted(dateTime);
+    } else {
+      scheduledDateTimeFormatted = "None";
+    }
   }
 
   @override
@@ -266,26 +282,51 @@ class _MyHomePageState extends State<MyHomePage> {
                         ),
                         onPressed: () async {
                           final newTime =
-                              await _selectDateTime(context, reminderDateTime);
+                              await _selectDateTime(context, selectedDateTime);
                           setState(() {
-                            log.d("Selected a new reminder date/time: $newTime");
-                            setReminder(newTime);
+                            log.d(
+                                "Selected a new reminder date/time: $newTime");
+                            setSelectedDateTime(newTime);
                           });
                         },
                       ),
                       Expanded(
                         child: Center(
-                          child: Text('Selected: $reminderDateTimeFormatted'),
+                          child: Text('Selected: $selectedDateTimeFormatted'),
                         ),
                       ),
                       PaddedRaisedButton(
                         buttonText: 'Schedule',
                         onPressed: () async {
-                          await _scheduleNotification();
+                          await _scheduleNotification(selectedDateTime);
+                          setState(() {
+                            // No action required here - only render new scheduled date/time
+                          });
                         },
                       ),
                     ],
                   ),
+                ),
+                Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Row(
+                    children: <Widget>[
+                      Expanded(
+                        child: Center(
+                          child: Text('Scheduled: $scheduledDateTimeFormatted'),
+                        ),
+                      ),
+                      PaddedRaisedButton(
+                        buttonText: 'Cancel',
+                        onPressed: () async {
+                          await _cancelNotification();
+                          setState(() {
+                            // No action required here - only render new scheduled date/time
+                          });
+                        },
+                      ),
+                    ],
+                  )
                 ),
                 const Divider(
                   color: Colors.red,
@@ -346,20 +387,13 @@ class _MyHomePageState extends State<MyHomePage> {
                   },
                 ),
                 PaddedRaisedButton(
-                  buttonText: 'Cancel notification',
-                  onPressed: () async {
-                    await _cancelNotification();
-                  },
-                ),
-                PaddedRaisedButton(
                   buttonText:
                       'Schedule notification to appear in $testScheduledNotificationDelay seconds',
                   onPressed: () async {
-                    setState(()  {
-                      var scheduledNotificationDateTime = DateTime.now()
-                          .add(Duration(seconds: testScheduledNotificationDelay));
-                      setReminder(scheduledNotificationDateTime);
-                      _scheduleNotification();
+                    setState(() {
+                      var scheduledNotificationDateTime = DateTime.now().add(
+                          Duration(seconds: testScheduledNotificationDelay));
+                      _scheduleNotification(scheduledNotificationDateTime);
                     });
                   },
                 ),
@@ -385,10 +419,12 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Future<void> _cancelNotification() async {
     await flutterLocalNotificationsPlugin.cancel(0);
+    setScheduledDateTime(null);
   }
 
   /// Schedules a notification that specifies a different icon, sound and vibration pattern
-  Future<void> _scheduleNotification() async {
+  Future<void> _scheduleNotification(DateTime scheduledDateTime) async {
+    setScheduledDateTime(scheduledDateTime);
     var vibrationPattern = Int64List(4);
     vibrationPattern[0] = 0;
     vibrationPattern[1] = 1000;
@@ -415,10 +451,10 @@ class _MyHomePageState extends State<MyHomePage> {
     await flutterLocalNotificationsPlugin.schedule(
         0,
         'Ich denk an Dich (Scheduled)',
-        'Send Greetings to "$targetPerson"\n(at $reminderDateTimeFormatted)',
-        reminderDateTime,
+        'Send Greetings to "$targetPerson"\n(at $scheduledDateTimeFormatted)',
+        scheduledDateTime,
         platformChannelSpecifics,
         payload: targetPerson);
-    log.d("Scheduled Notification for $reminderDateTimeFormatted");
+    log.d("Scheduled Notification for $scheduledDateTimeFormatted");
   }
 }

@@ -29,6 +29,7 @@ By {author} (mailto:{email}[{email}])
 * [x] Enable to launch external applications to send the message
 * [x] Add target person's name (TextField)
 * [x] Select Date/Time for OneTime Reminder
+* [x] Show scheduled time + cancel button
 
 === Developer Features
 
@@ -41,7 +42,7 @@ By {author} (mailto:{email}[{email}])
 
 ==== Usage Features
 
-* [ ] Show scheduled time + cancel button + probably _repeat after 24h_ switch
+* [ ] Show _repeat after 24h_ switch
 * [ ] Select Date/Time range for Frequent Reminders
 * [ ] Select Days-of-Week choice for Frequent Reminders
 * [ ] List of Applications as Pre-Selection
